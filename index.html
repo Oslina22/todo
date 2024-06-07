@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Основные стили */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e7e7e7;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background-color: #ffffff;
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+h1 {
+    color: #333333;
+    text-align: center;
+}
+
+/* Стили для формы добавления задач */
+#taskInput,
+#timerInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#addTaskButton,
+#startTimerButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#addTaskButton:hover,
+#startTimerButton:hover {
+    background-color: #4cae4c;
+}
+
+/* Стили для списка задач */
+#taskList {
+    list-style: none;
+    padding: 0;
+}
+
+#taskList li {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+}
+
+/* Стили для таймера */
+.timer__items {
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+}
+
+.timer__item {
+    font-size: 24px;
+    color: #333333;
+}
+
+/* Стили для выпадающего списка работников */
+#workerSelect {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    background-color: white;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+    </style>
+    <!-- ... -->
+</head>
+<body>
+    <div class="container">
+        <h1>Список дел</h1>
+        <input type="text" id="taskInput" placeholder="Добавить задачу">
+        <button id="addTaskButton">Добавить</button>
+        <ul id="taskList"></ul>
+        <input type="number" id="timerInput" placeholder="Часы для таймера">
+        <button id="startTimerButton">Запустить таймер</button>
+        <div id="timerDisplay" class="timer__items"></div>
+        <!-- ... -->
+<input type="file" id="fileInput" style="margin-top: 10px;">
+<!-- ... -->
+
+        <select id="workerSelect">
+            <option value="teacherIvanov">Учитель Иванов</option>
+            <option value="deputyManuilov">Завуч Мануилов</option>
+            <option value="directorPodsekaev">Директор Подсекаев</option>
+            <option value="guard">Охранник</option>
+            <option value="cleaner">Уборщица</option>
+        </select>
+        <!-- ... -->
+    </div>
+    <script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const taskInput = document.getElementById("taskInput");
+    const addTaskButton = document.getElementById("addTaskButton");
+    const taskList = document.getElementById("taskList");
+    const timerInput = document.getElementById("timerInput");
+    const workerSelect = document.getElementById("workerSelect");
+
+    // Функция добавления задачи и запуска таймера
+    addTaskButton.addEventListener("click", function () {
+        const task = taskInput.value.trim();
+        const hours = parseInt(timerInput.value.trim(), 10);
+        const worker = workerSelect.options[workerSelect.selectedIndex].text;
+        if (task !== "" && !isNaN(hours)) {
+            const li = document.createElement("li");
+            const span = document.createElement("span");
+            span.textContent = task + " - " + worker + " ";
+            li.appendChild(span);
+
+            const timerSpan = document.createElement("span");
+            li.appendChild(timerSpan);
+            taskList.appendChild(li);
+
+            taskInput.value = "";
+            timerInput.value = "";
+
+            // Запуск таймера
+            startTimer(hours, timerSpan, worker);
+        }
+    });
+
+    // Функция запуска таймера
+    function startTimer(duration, display, worker) {
+        let timer = duration * 60 * 60, hours, minutes, seconds;
+        const interval = setInterval(function () {
+            hours = parseInt(timer / 3600, 10);
+            minutes = parseInt((timer % 3600) / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = "Таймер: " + hours + ":" + minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(interval);
+                display.textContent = "Время вышло для " + worker;
+                alert("Таймер задачи '" + display.previousSibling.textContent + "' закончился для " + worker);
+            }
+        }, 1000);
+    }
+});
+
+    </script>
+</body>
+</html>
